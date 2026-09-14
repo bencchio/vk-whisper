@@ -68,3 +68,6 @@ local.properties
 
 # AGENTS
 .pi/SYSTEM.md
+
+# vk-whisper benchmark output
+vk/bench/results/
