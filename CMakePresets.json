@@ -18,6 +18,13 @@
     { "name": "vulkan",   "hidden": true, "cacheVariables": { "GGML_VULKAN":      "ON" } },
 
     {
+        "name": "x64-linux-clang", "hidden": true,
+        "cacheVariables": {
+            "CMAKE_C_COMPILER": "clang",
+            "CMAKE_CXX_COMPILER": "clang++"
+        }
+    },
+    {
         "name": "x64-linux-gcc", "hidden": true,
         "cacheVariables": {
             "CMAKE_C_COMPILER": "gcc",
@@ -29,8 +36,10 @@
     { "name": "x64-linux-gcc-reldbg", "inherits": [ "base", "x64-linux-gcc", "reldbg" ] },
     { "name": "x64-linux-gcc+static-release", "inherits": [ "base", "x64-linux-gcc", "release", "static" ] },
 
-    { "name": "x64-linux-vulkan-debug", "inherits": [ "base", "x64-linux-gcc", "vulkan", "debug" ] },
-    { "name": "x64-linux-vulkan-release", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release" ] },
-    { "name": "x64-linux-vulkan+static-release", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release", "static" ] }
+    { "name": "x64-linux-vulkan-debug", "inherits": [ "base", "x64-linux-clang", "vulkan", "debug" ] },
+    { "name": "x64-linux-vulkan-release", "inherits": [ "base", "x64-linux-clang", "vulkan", "release" ] },
+    { "name": "x64-linux-vulkan+static-release", "inherits": [ "base", "x64-linux-clang", "vulkan", "release", "static" ] },
+
+    { "name": "x64-linux-vulkan-gcc-release", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release" ] }
   ]
 }

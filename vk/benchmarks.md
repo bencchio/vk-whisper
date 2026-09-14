@@ -20,6 +20,8 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   en español + jerga técnica en inglés.
 - [`vk/bench/openmp.md`](bench/openmp.md) — `GGML_OPENMP` no afecta
   rendimiento con Vulkan activo, pero se mantiene por el fallback a CPU.
+- [`vk/bench/compiler.md`](bench/compiler.md) — GCC vs Clang sin diferencia
+  de runtime; Clang queda como compilador por defecto en `CMakePresets.json`.
 
 Script de benchmark: `vk/bench/run.sh` (ver ese archivo para reproducir).
 Datos crudos (no versionados) en `vk/bench/results/`.
