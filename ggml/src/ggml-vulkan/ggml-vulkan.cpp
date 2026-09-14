@@ -2719,7 +2719,7 @@ static constexpr uint32_t kSpvTensorAddressingDecodeVectorFuncBit = 0x4;
 static bool ggml_vk_strip_decode_vector(const uint32_t * code, size_t word_count, std::vector<uint32_t> & out) {
     static const char kDecodeVectorExt[] = "SPV_NV_cooperative_matrix_decode_vector";
 
-    if (word_count < 5) {
+    if (code == nullptr || word_count < 5) {
         return false;
     }
 
@@ -2845,7 +2845,7 @@ static bool ggml_vk_strip_decode_vector(const uint32_t * code, size_t word_count
 // Returns true when the input was modified; returns false otherwise
 // without touching `out`.
 static bool ggml_vk_roll_bk_loop(const uint32_t * code, size_t word_count, std::vector<uint32_t> & out) {
-    if (word_count < 5) {
+    if (code == nullptr || word_count < 5) {
         return false;
     }
 

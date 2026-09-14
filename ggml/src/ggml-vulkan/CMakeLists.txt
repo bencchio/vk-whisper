@@ -64,6 +64,19 @@ if (Vulkan_FOUND)
                              ../../include/ggml-vulkan.h
                             )
 
+    if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+        # GCC can emit a false-positive -Wnonnull for the SPIR-V patching
+        # code in ggml-vulkan.cpp (std::vector<uint32_t>::assign on a
+        # pointer range that is provably non-null/non-empty at the call
+        # site). The warning comes from a late interprocedural pass, so
+        # `#pragma GCC diagnostic ignored` at the call site does not
+        # suppress it -- only disabling it for the whole translation unit
+        # works. Downgraded to a (non-fatal) warning instead of silenced
+        # outright, so a real regression would still be visible.
+        set_source_files_properties(ggml-vulkan.cpp PROPERTIES
+            COMPILE_OPTIONS "-Wno-error=nonnull")
+    endif()
+
     set(VULKAN_SHADER_GEN_CMAKE_ARGS "")
 
     # Test all shader extensions
