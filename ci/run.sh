@@ -7,11 +7,8 @@
 # # CPU-only build
 # bash ./ci/run.sh ./tmp/results ./tmp/mnt
 #
-# # with CUDA support
-# GG_BUILD_CUDA=1 bash ./ci/run.sh ./tmp/results ./tmp/mnt
-#
-# # with SYCL support
-# GG_BUILD_SYCL=1 bash ./ci/run.sh ./tmp/results ./tmp/mnt
+# # with Vulkan support
+# GG_BUILD_VULKAN=1 bash ./ci/run.sh ./tmp/results ./tmp/mnt
 
 if [ -z "$2" ]; then
     echo "usage: $0 <output-dir> <mnt-dir>"
@@ -54,70 +51,8 @@ if [[ "$(uname -m)" == "x86_64" ]]; then
     CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_NATIVE=OFF"
 fi
 
-if [ ! -z ${GG_BUILD_METAL} ]; then
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_METAL=ON"
-fi
-
-if [ ! -z ${GG_BUILD_CUDA} ]; then
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_CUDA=ON"
-
-    if command -v nvidia-smi >/dev/null 2>&1; then
-        CUDA_ARCH=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader,nounits 2>/dev/null | head -1 | tr -d '.')
-        if [[ -n "$CUDA_ARCH" && "$CUDA_ARCH" =~ ^[0-9]+$ ]]; then
-            CMAKE_EXTRA="${CMAKE_EXTRA} -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH}"
-        else
-            echo "Warning: Using fallback CUDA architectures"
-            CMAKE_EXTRA="${CMAKE_EXTRA} -DCMAKE_CUDA_ARCHITECTURES=61;70;75;80;86;89"
-        fi
-    else
-        echo "Error: nvidia-smi not found, cannot build with CUDA"
-        exit 1
-    fi
-fi
-
-if [ ! -z ${GG_BUILD_ROCM} ]; then
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_HIP=ON"
-    if [ -z ${GG_BUILD_AMDGPU_TARGETS} ]; then
-        echo "Missing GG_BUILD_AMDGPU_TARGETS, please set it to your GPU architecture (e.g. gfx90a, gfx1100, etc.)"
-        exit 1
-    fi
-
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DAMDGPU_TARGETS=${GG_BUILD_AMDGPU_TARGETS}"
-fi
-
-if [ ! -z ${GG_BUILD_SYCL} ]; then
-    if [ -z ${ONEAPI_ROOT} ]; then
-        echo "Not detected ONEAPI_ROOT, please install oneAPI base toolkit and enable it by:"
-        echo "source /opt/intel/oneapi/setvars.sh"
-        exit 1
-    fi
-    # Use only main GPU
-    export ONEAPI_DEVICE_SELECTOR="level_zero:0"
-    # Enable sysman for correct memory reporting
-    export ZES_ENABLE_SYSMAN=1
-    # to circumvent precision issues on CPY operations
-    export SYCL_PROGRAM_COMPILE_OPTIONS="-cl-fp32-correctly-rounded-divide-sqrt"
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_SYCL=1 -DCMAKE_C_COMPILER=icx -DCMAKE_CXX_COMPILER=icpx -DGGML_SYCL_F16=ON"
-fi
-
 if [ ! -z ${GG_BUILD_VULKAN} ]; then
     CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_VULKAN=1"
-
-    # if on Mac, disable METAL
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_METAL=OFF -DGGML_BLAS=OFF"
-    fi
-
-fi
-
-if [ ! -z ${GG_BUILD_WEBGPU} ]; then
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_WEBGPU=1"
-fi
-
-if [ ! -z ${GG_BUILD_MUSA} ]; then
-    # Use qy1 by default (MTT S80)
-    MUSA_ARCH=${MUSA_ARCH:-21}
-    CMAKE_EXTRA="${CMAKE_EXTRA} -DGGML_MUSA=ON -DMUSA_ARCHITECTURES=${MUSA_ARCH}"
 fi
 
 if [ ! -z ${GG_BUILD_NO_SVE} ]; then
@@ -314,14 +249,8 @@ function gg_run_bench {
             if [[ $system_info == *"BLAS = 1"* ]]; then
                 config="$config BLAS"
             fi
-            if [[ $system_info == *"COREML = 1"* ]]; then
-                config="$config COREML"
-            fi
-            if [[ $system_info == *"CUDA = 1"* ]]; then
-                config="$config CUDA"
-            fi
-            if [[ $system_info == *"METAL = 1"* ]]; then
-                config="$config METAL"
+            if [ ! -z ${GG_BUILD_VULKAN} ]; then
+                config="$config VULKAN"
             fi
 
             # get commit hash
