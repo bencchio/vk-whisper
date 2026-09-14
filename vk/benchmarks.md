@@ -31,6 +31,10 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   (512→51864) es ~13% del tiempo de GPU por sí sola, más que la atención
   en varias fases — no optimizable sin cambiar el modelo, ya mitigado por
   cuantización.
+- [`vk/bench/vulkan-env-vars.md`](bench/vulkan-env-vars.md) — variables
+  `GGML_VK_*` de runtime (fusion, graph-optimize, mmvq, graphics queue):
+  ninguna afecta el rendimiento en este caso de uso, probado con
+  `large-v3-turbo-q8_0`.
 - [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
   técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
   para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
