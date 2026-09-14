@@ -18,6 +18,8 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   de calidad/velocidad/memoria entre 6 modelos multilingües (small-q8_0,
   medium-q8_0, large-v3-q5_0, large-v3-turbo y sus variantes) con audio real
   en español + jerga técnica en inglés.
+- [`vk/bench/openmp.md`](bench/openmp.md) — `GGML_OPENMP` no afecta
+  rendimiento con Vulkan activo, pero se mantiene por el fallback a CPU.
 
 Script de benchmark: `vk/bench/run.sh` (ver ese archivo para reproducir).
 Datos crudos (no versionados) en `vk/bench/results/`.
@@ -43,6 +45,19 @@ Datos crudos (no versionados) en `vk/bench/results/`.
   tiempo) y valores muy bajos **rompen el modelo** (fallbacks, 5-25x más
   lento, peor calidad) — no usar cerca del límite sin validar por tipo de
   audio.
+- **`GGML_OPENMP`**: dejar en `ON` (default). Con Vulkan activo no cambia el
+  rendimiento (todo el cómputo pesado corre en GPU), pero es gratis y
+  paraleliza correctamente el fallback a CPU cuando no hay GPU disponible.
+
+## Vulkan con fallback automático a CPU
+
+vk-whisper es "Vulkan-first" pero **no requiere GPU para funcionar**: con
+build `-DGGML_VULKAN=ON` (que deja `GGML_CPU=ON` por default), en runtime
+`whisper_backend_init` (`src/whisper.cpp:1298-1362`) busca un dispositivo
+GPU y, si no lo encuentra (o se pasa `--no-gpu`), cae automáticamente al
+backend CPU sin fallar — verificado corriendo `whisper-cli -ng`. No hace
+falta ninguna configuración especial para esto: es el comportamiento nativo
+de ggml, ya activo en este repo.
 
 Detalle, tablas completas y metodología en los archivos de `vk/bench/`
 enlazados arriba.
