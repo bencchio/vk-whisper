@@ -26,6 +26,11 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   revisión de código (no de flags) buscando reducir memoria/transferencias:
   3 hallazgos reales en `whisper.cpp`, ninguno aplicable a este caso de uso
   (1 stream local, tiempo real, modelo grande, beam-size=1 fijo).
+- [`vk/bench/shader-profile.md`](bench/shader-profile.md) — perfil real de
+  shaders con `GGML_VK_PERF_LOGGER=1`: la proyección final a vocabulario
+  (512→51864) es ~13% del tiempo de GPU por sí sola, más que la atención
+  en varias fases — no optimizable sin cambiar el modelo, ya mitigado por
+  cuantización.
 - [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
   técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
   para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
