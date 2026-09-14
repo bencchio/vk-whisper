@@ -11,6 +11,13 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   (presión de registros en el shader `mul_mat_vec` de `ggml-vulkan`).
 - [`vk/bench/lto.md`](bench/lto.md) — evaluación de `GGML_LTO` como flag de
   compilación.
+- [`vk/bench/audio-ctx.md`](bench/audio-ctx.md) — impacto de recortar
+  `--audio-ctx` (incluye una advertencia importante: valores muy bajos
+  rompen el modelo, no solo degradan calidad).
+- [`vk/bench/models-comparison.md`](bench/models-comparison.md) — comparación
+  de calidad/velocidad/memoria entre 6 modelos multilingües (small-q8_0,
+  medium-q8_0, large-v3-q5_0, large-v3-turbo y sus variantes) con audio real
+  en español + jerga técnica en inglés.
 
 Script de benchmark: `vk/bench/run.sh` (ver ese archivo para reproducir).
 Datos crudos (no versionados) en `vk/bench/results/`.
@@ -32,6 +39,10 @@ Datos crudos (no versionados) en `vk/bench/results/`.
   calidad observada).
 - **`GGML_LTO`**: no usar en desarrollo (build ~2.7x más lento, <1% de
   ganancia); considerar solo para un build de release único y reusado.
+- **`--audio-ctx`**: no reduce el total con `beam-size=1` (decode domina el
+  tiempo) y valores muy bajos **rompen el modelo** (fallbacks, 5-25x más
+  lento, peor calidad) — no usar cerca del límite sin validar por tipo de
+  audio.
 
 Detalle, tablas completas y metodología en los archivos de `vk/bench/`
 enlazados arriba.

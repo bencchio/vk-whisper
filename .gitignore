@@ -71,3 +71,4 @@ local.properties
 
 # vk-whisper benchmark output
 vk/bench/results/
+vk/bench/recordings/
