@@ -41,3 +41,31 @@ La mitigación no sería un flag de build sino tocar el shader (ej. bajar
 `unroll_count`, o dividir el trabajo en menos columnas por invocación cuando
 `NUM_COLS>3`), lo cual es una modificación de más riesgo/esfuerzo que
 requeriría su propio ciclo de prueba.
+
+## Por qué no se está arreglando esto (por ahora)
+
+Decisión deliberada de no seguir, no un olvido. Razones:
+
+1. **Ya existe un workaround sin código**: la recomendación de
+   `beam-size.md` es usar `bs=1` para tiempo real y `bs=2` para batch/
+   offline — ninguno de los dos pasa por el rango problemático (`bs≥4`).
+   El caso de uso que dispara el bug no es uno que estemos usando.
+2. **Es un archivo compartido entre vendors**: `mul_mat_vec.comp` lo usa
+   cualquier GPU que pase por el path Vulkan de ggml (AMD, Intel, y
+   NVIDIA sin coopmat2), no solo esta Radeon 780M. Un cambio mal calibrado
+   para RDNA3 podría empeorar el rendimiento en otro hardware sin que lo
+   notemos — no tenemos forma de probar en otras GPUs desde acá.
+3. **La hipótesis no está confirmada**: sin perfilar VGPRs reales (RGP o
+   disasm de SPIR-V), "arreglar" el shader a ciegas es tan probable que
+   ayude como que empeore algo distinto. El costo de investigarlo bien
+   (herramientas de profiling de GPU que no tenemos instaladas, tiempo de
+   iterar shaders y volver a medir) es alto para un problema que ya está
+   evitado por configuración.
+4. **No bloquea nada hoy**: a diferencia del bug de `-Wnonnull` de GCC
+   (que rompía el build y sí se arregló), este hallazgo es una
+   ineficiencia de rendimiento en un rango que ya decidimos no usar, no
+   un error funcional.
+
+Se documenta igual porque es información real y verificable en el código,
+útil si en el futuro alguien necesita `beam-size≥4` (más calidad a costa de
+velocidad) y quiere entender por qué el salto de costo no es proporcional.
