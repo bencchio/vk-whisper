@@ -26,6 +26,11 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   revisión de código (no de flags) buscando reducir memoria/transferencias:
   3 hallazgos reales en `whisper.cpp`, ninguno aplicable a este caso de uso
   (1 stream local, tiempo real, modelo grande, beam-size=1 fijo).
+- [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
+  técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
+  para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
+  hallazgo nuevo de bajo impacto (copia de staging evitable al cargar el
+  modelo, no afecta inferencia).
 
 Script de benchmark: `vk/bench/run.sh` (ver ese archivo para reproducir).
 Datos crudos (no versionados) en `vk/bench/results/`.
