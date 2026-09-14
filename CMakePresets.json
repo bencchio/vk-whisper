@@ -16,6 +16,7 @@
     { "name": "reldbg",   "hidden": true, "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" } },
     { "name": "static",   "hidden": true, "cacheVariables": { "GGML_STATIC":      "ON" } },
     { "name": "vulkan",   "hidden": true, "cacheVariables": { "GGML_VULKAN":      "ON" } },
+    { "name": "lto",      "hidden": true, "cacheVariables": { "GGML_LTO":         "ON" } },
 
     {
         "name": "x64-linux-clang", "hidden": true,
@@ -40,6 +41,8 @@
     { "name": "x64-linux-vulkan-release", "inherits": [ "base", "x64-linux-clang", "vulkan", "release" ] },
     { "name": "x64-linux-vulkan+static-release", "inherits": [ "base", "x64-linux-clang", "vulkan", "release", "static" ] },
 
-    { "name": "x64-linux-vulkan-gcc-release", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release" ] }
+    { "name": "x64-linux-vulkan-gcc-release", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release" ] },
+
+    { "name": "x64-linux-vulkan-release-lto", "inherits": [ "base", "x64-linux-gcc", "vulkan", "release", "lto" ] }
   ]
 }
