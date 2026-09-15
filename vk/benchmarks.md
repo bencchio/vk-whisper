@@ -46,6 +46,10 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   sigue siendo el mejor punto (la única fase CPU-bound es mel-spectrogram).
   Incluye afinidad de CPU (`taskset`) y gobernador de frecuencia: ninguno
   aporta, ya están en su óptimo o sin carga suficiente para importar.
+- [`vk/bench/ggml-vendoring.md`](bench/ggml-vendoring.md) — decisión de
+  mantener `ggml` vendorizado (no `WHISPER_USE_SYSTEM_GGML`), y estado del
+  atraso respecto a upstream (3 cambios de Vulkan a revisar en un futuro
+  sync, ninguno urgente).
 - [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
   técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
   para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
