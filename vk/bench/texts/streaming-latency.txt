@@ -1,0 +1,1 @@
+Estamos probando el pipeline de streaming en tiempo real. La idea es medir la latencia entre que dejo de hablar y aparece el texto transcrito. Vamos a usar un modelo large cuantizado, corriendo sobre Vulkan en la iGPU. El objetivo es encontrar el balance correcto entre step size, contexto y velocidad de respuesta, sin gastar recursos de más.

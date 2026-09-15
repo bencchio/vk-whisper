@@ -21,6 +21,12 @@ audio en español alucinan por completo, sin importar la velocidad.
 | T5 | Cardiología | jerga médica, nombres de fármacos |
 | T6 | Reflexión personal | conversacional, tono espontáneo |
 
+**Nota de replicabilidad**: el texto exacto leído en cada caso no se
+guardó como archivo (solo quedan los audios en `vk/bench/recordings/`,
+gitignorados) — no es posible repetir esta comparación exacta hoy. A
+partir de `streaming-latency.md` los textos de lectura sí se versionan en
+[`vk/bench/texts/`](texts/) para poder re-grabar/repetir en el futuro.
+
 ## Tabla consolidada
 
 | Modelo | Memoria | T1 | T2\* | T3 | T4 | T5 | T6 | **Media** |

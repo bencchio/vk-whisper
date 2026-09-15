@@ -15,7 +15,9 @@ en vivo). El log queda en `vk/bench/results/stream-<label>.log`.
 
 Entorno: `large-v3-turbo-q8_0`, headset Bluetooth (perfil
 `headset-head-unit`), Radeon 780M/RADV, voz real leyendo el mismo texto de
-~24s en cada corrida:
+~24s en cada corrida (guardado en
+[`vk/bench/texts/streaming-latency.txt`](texts/streaming-latency.txt) para
+poder repetir la lectura exacta en el futuro):
 
 > "Estamos probando el pipeline de streaming en tiempo real. La idea es
 > medir la latencia entre que dejo de hablar y aparece el texto
