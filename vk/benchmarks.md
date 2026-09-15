@@ -22,6 +22,12 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   rendimiento con Vulkan activo, pero se mantiene por el fallback a CPU.
 - [`vk/bench/compiler.md`](bench/compiler.md) — GCC vs Clang sin diferencia
   de runtime; Clang queda como compilador por defecto en `CMakePresets.json`.
+- [`vk/bench/alternative-backends.md`](bench/alternative-backends.md) —
+  ¿ROCm en vez de Vulkan? Bloqueado por un bug abierto específico de este
+  chip (`gfx1103`). ¿Un modelo más moderno que Whisper? Parakeet-TDT/
+  Canary (NVIDIA) atacarían el piso de latencia de 30s de Whisper con una
+  arquitectura streaming-nativa — candidato serio para explorar a futuro,
+  no se migra ahora por el costo de rehacer toda la validación.
 - [`vk/bench/fft-optimization.md`](bench/fft-optimization.md) — mide
   aislado el FFT del mel-spectrogram (candidato real a migrar a C/SIMD/
   ASM): una versión iterativa es 2.5x más rápida, pero el ahorro absoluto
