@@ -22,6 +22,10 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   rendimiento con Vulkan activo, pero se mantiene por el fallback a CPU.
 - [`vk/bench/compiler.md`](bench/compiler.md) — GCC vs Clang sin diferencia
   de runtime; Clang queda como compilador por defecto en `CMakePresets.json`.
+- [`vk/bench/fft-optimization.md`](bench/fft-optimization.md) — mide
+  aislado el FFT del mel-spectrogram (candidato real a migrar a C/SIMD/
+  ASM): una versión iterativa es 2.5x más rápida, pero el ahorro absoluto
+  es ~0.5% del tiempo total — no justifica la reescritura.
 - [`vk/bench/language-auto-detect.md`](bench/language-auto-detect.md) —
   hallazgo de código + medición: `-l auto` corre el encoder dos veces
   (detección + transcripción real), +91% de tiempo de encode medido. No
