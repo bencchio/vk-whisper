@@ -22,6 +22,10 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   rendimiento con Vulkan activo, pero se mantiene por el fallback a CPU.
 - [`vk/bench/compiler.md`](bench/compiler.md) — GCC vs Clang sin diferencia
   de runtime; Clang queda como compilador por defecto en `CMakePresets.json`.
+- [`vk/bench/language-auto-detect.md`](bench/language-auto-detect.md) —
+  hallazgo de código + medición: `-l auto` corre el encoder dos veces
+  (detección + transcripción real), +91% de tiempo de encode medido. No
+  afecta la configuración actual del proyecto (idioma siempre fijo).
 - [`vk/bench/memory-code-review.md`](bench/memory-code-review.md) —
   revisión de código (no de flags) buscando reducir memoria/transferencias:
   3 hallazgos reales en `whisper.cpp`, ninguno aplicable a este caso de uso
