@@ -35,6 +35,11 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   `GGML_VK_*` de runtime (fusion, graph-optimize, mmvq, graphics queue):
   ninguna afecta el rendimiento en este caso de uso, probado con
   `large-v3-turbo-q8_0`.
+- [`vk/bench/threads.md`](bench/threads.md) — prueba de la hipótesis
+  "menos threads de CPU + iGPU = más rápido": no se confirma, `--threads 4`
+  sigue siendo el mejor punto (la única fase CPU-bound es mel-spectrogram).
+  Incluye afinidad de CPU (`taskset`) y gobernador de frecuencia: ninguno
+  aporta, ya están en su óptimo o sin carga suficiente para importar.
 - [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
   técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
   para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
