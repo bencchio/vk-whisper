@@ -35,6 +35,12 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   `GGML_VK_*` de runtime (fusion, graph-optimize, mmvq, graphics queue):
   ninguna afecta el rendimiento en este caso de uso, probado con
   `large-v3-turbo-q8_0`.
+- [`vk/bench/streaming-latency.md`](bench/streaming-latency.md) — latencia
+  percibida real en `vk-whisper-stream` (voz en vivo, no archivo): probar
+  `--step`/`--length`/VAD reveló que el `encode` tiene un piso fijo de
+  ~800-900ms (Whisper siempre procesa una ventana de 30s) — bajar `--step`
+  no ayuda y empeora la calidad; el default (`step=3000 length=10000`) es
+  la mejor configuración probada.
 - [`vk/bench/threads.md`](bench/threads.md) — prueba de la hipótesis
   "menos threads de CPU + iGPU = más rápido": no se confirma, `--threads 4`
   sigue siendo el mejor punto (la única fase CPU-bound es mel-spectrogram).
