@@ -51,7 +51,10 @@ migración/cache-cold en L1/L2) o forzar el gobernador de CPU?
   (`cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor`) — no hay
   rampa de frecuencia que evitar, nada que ganar ahí.
 - **Afinidad** (`taskset -c 0-3` vs. sin pin, 3 corridas c/u,
-  `large-v3-turbo-q8_0`, `-t 4`, `-bs 1`):
+  `large-v3-turbo-q8_0`, `-t 4`, `-bs 1`). Reproducible con:
+  ```
+  TASKSET_CPUS="0-3" EXTRA_ARGS="-bs 1 -bo 1" vk/bench/run.sh label ~/Build/vk-whisper models/ggml-large-v3-turbo-q8_0.bin samples/jfk.wav 4
+  ```
 
   | | total (avg) |
   |---|---:|

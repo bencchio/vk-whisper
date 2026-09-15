@@ -7,6 +7,12 @@ el texto después de que la persona termina de hablar**, variando los
 parámetros de la aplicación (`--step`, `--length`, VAD), no de la
 librería.
 
+Reproducible con `vk/bench/stream-latency.sh [label] [step_ms] [length_ms]
+[duration_s]` — lanza `vk-whisper-stream`, timestampa cada línea de salida
+y avisa cuándo empezar a hablar. Requiere un hablante real (no reproduce
+un audio fijo, justamente porque lo que se mide es el pipeline de captura
+en vivo). El log queda en `vk/bench/results/stream-<label>.log`.
+
 Entorno: `large-v3-turbo-q8_0`, headset Bluetooth (perfil
 `headset-head-unit`), Radeon 780M/RADV, voz real leyendo el mismo texto de
 ~24s en cada corrida:

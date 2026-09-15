@@ -9,6 +9,7 @@
 # Usage:
 #   vk/bench/run.sh [label] [build-dir] [model] [sample] [threads]
 #   EXTRA_ARGS="-bs 1 -bo 1" vk/bench/run.sh [label] ...   # pass extra whisper-cli flags
+#   TASKSET_CPUS="0-3" vk/bench/run.sh [label] ...         # pin to CPU cores via taskset
 #
 # Defaults:
 #   label     = git short hash + dirty flag
@@ -17,6 +18,7 @@
 #   sample    = samples/jfk.wav
 #   threads   = 4
 #   EXTRA_ARGS = (none)
+#   TASKSET_CPUS = (none, no pinning)
 
 set -euo pipefail
 
@@ -29,6 +31,16 @@ MODEL="${3:-models/ggml-base.en.bin}"
 SAMPLE="${4:-samples/jfk.wav}"
 THREADS="${5:-4}"
 EXTRA_ARGS="${EXTRA_ARGS:-}"
+TASKSET_CPUS="${TASKSET_CPUS:-}"
+
+RUN_PREFIX=()
+if [ -n "${TASKSET_CPUS}" ]; then
+    if ! command -v taskset >/dev/null 2>&1; then
+        echo "Error: taskset not found (needed for TASKSET_CPUS)" >&2
+        exit 1
+    fi
+    RUN_PREFIX=(taskset -c "${TASKSET_CPUS}")
+fi
 
 GIT_HASH="$(git rev-parse --short HEAD 2>/dev/null || echo unknown)"
 DIRTY=""
@@ -57,9 +69,9 @@ mkdir -p "${SCRIPT_DIR}/results"
 RAW_LOG="${SCRIPT_DIR}/results/${LABEL}.log"
 HISTORY="${SCRIPT_DIR}/results/history.csv"
 
-echo "Running benchmark: label=${LABEL} model=${MODEL} sample=${SAMPLE} threads=${THREADS} extra_args=${EXTRA_ARGS}"
+echo "Running benchmark: label=${LABEL} model=${MODEL} sample=${SAMPLE} threads=${THREADS} extra_args=${EXTRA_ARGS} taskset_cpus=${TASKSET_CPUS:-none}"
 # shellcheck disable=SC2086
-"${CLI}" -m "${MODEL}" -f "${SAMPLE}" -t "${THREADS}" ${EXTRA_ARGS} > "${RAW_LOG}" 2>&1 || {
+"${RUN_PREFIX[@]}" "${CLI}" -m "${MODEL}" -f "${SAMPLE}" -t "${THREADS}" ${EXTRA_ARGS} > "${RAW_LOG}" 2>&1 || {
     echo "whisper-cli failed, see ${RAW_LOG}" >&2
     exit 1
 }
@@ -79,10 +91,10 @@ TOTAL=$(extract_ms "total time")
 GPU=$(grep -m1 "Vulkan devices" -A1 "${RAW_LOG}" | tail -1 | sed -E 's/^ggml_vulkan: 0 = //' | cut -d'|' -f1 | sed 's/[[:space:]]*$//')
 
 if [ ! -f "${HISTORY}" ]; then
-    echo "timestamp,label,gpu,model,sample,threads,load_ms,mel_ms,encode_ms,decode_ms,batchd_ms,sample_ms,total_ms" > "${HISTORY}"
+    echo "timestamp,label,gpu,model,sample,threads,load_ms,mel_ms,encode_ms,decode_ms,batchd_ms,sample_ms,total_ms,taskset_cpus" > "${HISTORY}"
 fi
 
-echo "$(date -Iseconds),${LABEL},\"${GPU}\",$(basename "${MODEL}"),$(basename "${SAMPLE}"),${THREADS},${LOAD},${MEL},${ENCODE},${DECODE},${BATCHD},${SAMPLE_T},${TOTAL}" >> "${HISTORY}"
+echo "$(date -Iseconds),${LABEL},\"${GPU}\",$(basename "${MODEL}"),$(basename "${SAMPLE}"),${THREADS},${LOAD},${MEL},${ENCODE},${DECODE},${BATCHD},${SAMPLE_T},${TOTAL},${TASKSET_CPUS}" >> "${HISTORY}"
 
 echo
 echo "Result (${LABEL}): total=${TOTAL}ms encode=${ENCODE}ms decode=${DECODE}ms batchd=${BATCHD}ms"
