@@ -64,6 +64,15 @@ Resumen de los hallazgos de optimización. Detalle completo por tema en
   mantener `ggml` vendorizado (no `WHISPER_USE_SYSTEM_GGML`), y estado del
   atraso respecto a upstream (3 cambios de Vulkan a revisar en un futuro
   sync, ninguno urgente).
+- [`vk/bench/three-way-comparison.md`](bench/three-way-comparison.md) —
+  comparación directa whisper.cpp genérico (sin flags de CPU) vs.
+  whisper.cpp optimizado para este CPU vs. `vk-whisper`, los 3 con Vulkan
+  y sobre los 7 audios reales de `vk/bench/recordings/`: sin diferencia
+  medible (±0.4%) — con `GGML_VULKAN=ON` casi todo el cómputo corre en
+  GPU, así que ni los flags de compilación de CPU ni los cambios propios
+  del fork mueven la aguja en velocidad bruta. También documenta que
+  `vk/orig/` (la copia vendorizada) está rota (le faltan archivos del
+  v1.9.4 que declara).
 - [`vk/bench/igpu-research.md`](bench/igpu-research.md) — investigación de
   técnicas modernas (drivers RADV, PRs de llama.cpp, extensiones Vulkan)
   para acelerar iGPUs: casi todo ya activo o no aplica a UMA; un solo
